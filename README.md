@@ -1,4 +1,21 @@
 # YQuantum-Minimising-Wildfire-Risks
+
+*Optimizing wildfire insurance portfolios by solving the MIS on a quantum computer for the YQuantum 2025 Travelers/Capgemini/QuEra challenge.*
+
+### Instructions
+- Install dependencies via `python -m pip install -r requirements.txt`. Some dependencies, such as juliapkg, are not used.
+- Classical solution in `mis_classical.ipynb`.
+- Quantum solution in `mis_quantum.ipynb`.
+- Data in `data/`.
+- Raw sample results from Aquila (QuEra's neutral atom quantum computer) in `quantum_results/`.
+
+### Capabilities
+Both the classical and quantum solutions generate a set of geographically diverse portfolios by creating a graph of the portfolios, and iteratively calculating the MIS. The MIS is calculated, nodes in it are deleted, and this process is repeated until there are no nodes left in the graph. Input data from files is not fully supported. To run on quantum hardware, use [qBraid](https://www.qbraid.com/), or [AWS Braket](https://aws.amazon.com/braket/). Running on qBraid is preffered; the code may need to be modified to run on the latter. 
+
+Mainly, the code will generate a list of portfolios and a graph coloring such as the one below.
+
+![image](output_quantum.png)
+
 ## Inspiration
 
 Problem: Insurers struggle with clustered wildfire risks, where neighboring high-risk properties can trigger cascading losses.
@@ -15,7 +32,7 @@ Risk Adjustment: Refines groups by reassigning nodes if local neighbor condition
 Parameter Initialization and Lattice Setup
 
 Quantum Hardware Capabilities:
-The algorithm begins by querying the system’s capabilities (using get_capabilities()), which provides key Rydberg parameters such as the C₆ interaction coefficient and the maximum Rabi frequency (Ωₘₐₓ). These quantities are used to determine derived parameters like the blockade radius (R₆) and the final detuning (Δ_end).
+The algorithm begins by querying the system’s capabilities (using `get_capabilities()`), which provides key Rydberg parameters such as the C₆ interaction coefficient and the maximum Rabi frequency (Ωₘₐₓ). These quantities are used to determine derived parameters like the blockade radius (R₆) and the final detuning (Δ_end).
 
 Lattice Construction:
 A square lattice is generated via Bloqade’s Square class using a defined lattice spacing (e.g., 5.0 units). We add realistic imperfections by applying a defect density—removing some sites—so that the initial state mimics a real-world distribution of houses.
@@ -31,7 +48,7 @@ By carefully choosing these parameters, the system is coaxed into favoring low-e
 Quantum Execution and Measurement
 
 Running the Program:
-The defined pulse sequence is executed over many runs (here, 100) using the quantum simulator (or hardware) via program.bloqade.python().run().
+The defined pulse sequence is executed over many runs (here, 100) using the quantum simulator (or hardware) via `program.bloqade.python().run()`.
 
 Post-Processing Measurements:
 The output is a probabilistic bitstring (or report) where each bit indicates the state of a lattice site (with ‘0’ typically marking a selected site for the independent set). A helper function extracts the most probable bitstring, identifying which sites (by their indices) form the quantum-selected independent set.
@@ -39,7 +56,7 @@ The output is a probabilistic bitstring (or report) where each bit indicates the
 Recursive Extraction of Portfolios (MIS)
 
 Iterative Removal:
-The routine mis() takes the current lattice and the corresponding global indices and runs the quantum protocol. Once a measurement identifies a set of sites to be “removed” (i.e., forming one independent set), these sites are mapped back to the overall list (global indices) and saved as one portfolio.
+The routine `mis()` takes the current lattice and the corresponding global indices and runs the quantum protocol. Once a measurement identifies a set of sites to be “removed” (i.e., forming one independent set), these sites are mapped back to the overall list (global indices) and saved as one portfolio.
 
 Recursion:
 The lattice is then updated—removing the selected sites—and the algorithm is recursively applied to the remaining sites. This process repeats until no sites remain, yielding multiple disjoint portfolios (each portfolio is an independent set).
@@ -72,7 +89,7 @@ Communication: Translating complex quantum-inspired methods into clear insights 
 
 ## Accomplishments that we're proud of
 
-Rapid Prototyping: Built a functional, end-to-end solution within hackathon time limits. Started with a solution in Julia and converted into Python very carefully
+Rapid Prototyping: Built a functional, end-to-end solution within hackathon time limits. Started with a solution in Julia and converted into Python very carefully.
 Innovative Integration: Merged classical graph theory with quantum-inspired optimization for insurance risk management.
 Clear Visualization: Created dual visualizations that communicate both raw grouping and appetite-adjusted portfolios effectively.
 
